@@ -14,8 +14,9 @@ export function GarageControls() {
     updateNeeded();
   };
   
-  const updateCar = (car: ICar) => {
-    console.log('update', car.id, car.name, car.color);
+  const updateCar = async (car: ICar) => {
+    await model.updateCar(car);
+    updateNeeded();
   };
 
   return (

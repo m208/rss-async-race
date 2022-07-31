@@ -25,6 +25,12 @@ export const model = {
     return data;
   },
 
+  updateCar: async (car: ICar) => {
+    const url = baseApiUrl + `/garage/${car.id}`;
+    const data = await postJson(url, 'PUT', car);
+    return data;
+  },
+
 
 };
 
