@@ -13,6 +13,7 @@ export function GarageControls() {
     await model.createCar(car);
     updateNeeded();
   };
+  
   const updateCar = (car: ICar) => {
     console.log('update', car.id, car.name, car.color);
   };
@@ -20,11 +21,11 @@ export function GarageControls() {
   return (
         <div className="garage_controls">
             <GarageControlsInput 
-                buttonText='Create' action={createCar} stateAble={false}
+                buttonText='Create' action={createCar} carSelectionControl={false}
             ></GarageControlsInput>
 
             <GarageControlsInput 
-                buttonText='Update' action={updateCar} stateAble={true}
+                buttonText='Update' action={updateCar} carSelectionControl={true}
             ></GarageControlsInput>
 
             <div className="controls_line">

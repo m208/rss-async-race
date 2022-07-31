@@ -6,54 +6,42 @@ interface GarageControlsInputProps {
   buttonText: string;
   action: (car: ICar) => void;
 
-  stateAble: boolean
+  carSelectionControl: boolean
 }
 
-export function GarageControlsInput({ buttonText, action, stateAble }: GarageControlsInputProps) {
+export function GarageControlsInput({ buttonText, action, carSelectionControl = false }: GarageControlsInputProps) {
 
-  const { selectedCar } = useContext(GarageContext);
-  // const bc: ICar = (selectedCar) ? selectedCar : { id: 0, color: '#ffffff', name : '' };
-
-  // const bindedCar: ICar = (stateAble && selectedCar)? selectedCar : {id: 0, color: '#ffffff', name : ''};
-  // const [bindedCar1, setbindedCar] = useState((stateAble && selectedCar)? selectedCar : {id: 0, color: '#ffffff', name : ''});
-
-
-  // const [bindedCar, setBindedCar] = useState(bc);
-
-  // const manualInput = false;
+  const { selectedCar, selectCar } = useContext(GarageContext);
 
   const [color, setColor] = useState('#ffffff');
   const [name, setName] = useState('');
   const [id, setId] = useState(0);
 
   useEffect(() => {
-    if (selectedCar && stateAble ) {
+    if (selectedCar && carSelectionControl ) {
       setColor(selectedCar.color);
       setName(selectedCar.name);
       setId(selectedCar.id);
-
-            
     }
   });
 
-
-
-  // const [color, setColor] = useState(selectedCar?.color || 'ffffff');
-  // const [name, setName] = useState(selectedCar?.name);
-  // const [id, setId] = useState(selectedCar?.id);
-
-
   const changeColor = (event: React.KeyboardEvent<HTMLInputElement>) => {
-
     setColor(event.target.value);
+    if (carSelectionControl && selectedCar) {
+      const car: ICar = { ...selectedCar };
+      car.color = event.target.value;
+      selectCar(car);
+    } 
   };
+
   const changeName = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    console.log(event.target.value);
-        
     setName(event.target.value);
+    if (carSelectionControl && selectedCar) {
+      const car: ICar = { ...selectedCar };
+      car.name = event.target.value;
+      selectCar(car);
+    }
   };
-
-
 
   const resetFields = () =>{
     setColor('#ffffff');
@@ -61,8 +49,14 @@ export function GarageControlsInput({ buttonText, action, stateAble }: GarageCon
   };
 
   const click = () => {
-    action({ name, color, id });
-    resetFields();
+    if (carSelectionControl && selectedCar) {
+      action(selectedCar);
+      resetFields();
+    } else {
+      action({ name, color, id });
+      resetFields();
+    }
+
   };
 
   return (
