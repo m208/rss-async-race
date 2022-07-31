@@ -1,15 +1,31 @@
 import React, { useContext } from 'react';
 import { GarageContext } from '../context/garageContext';
+import { model } from '../model/fetchData';
+import { ICar } from '../types/types';
 import { GarageControlsInput } from './GarageControlsInput';
 
 
 
 export function GarageControls() {
-    //const {modal, open, close} = useContext(GarageContext)
-    return (
+  const { updateNeeded } = useContext(GarageContext);
+
+  const createCar = async (car: ICar) => {
+    await model.createCar(car);
+    updateNeeded();
+  };
+  const updateCar = (car: ICar) => {
+    console.log('update', car.id, car.name, car.color);
+  };
+
+  return (
         <div className="garage_controls">
-            <GarageControlsInput buttonText='Create'></GarageControlsInput>
-            <GarageControlsInput buttonText='Update'></GarageControlsInput>
+            <GarageControlsInput 
+                buttonText='Create' action={createCar} stateAble={false}
+            ></GarageControlsInput>
+
+            <GarageControlsInput 
+                buttonText='Update' action={updateCar} stateAble={true}
+            ></GarageControlsInput>
 
             <div className="controls_line">
                 <button className='btn btn-light'>RACE</button>
@@ -18,7 +34,7 @@ export function GarageControls() {
             </div>
 
         </div>
-    );
+  );
 }
 
 
