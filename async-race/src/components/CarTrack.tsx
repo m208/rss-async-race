@@ -8,8 +8,8 @@ interface CarItemProps {
   car: ICar
 }
 
-function randomNumInRange(min: number, max: number) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+function getTypeFromId(id: number) {
+  return  (id % 4) + 1;
 }
 
 export function CarTrack({ car }: CarItemProps) {
@@ -20,11 +20,6 @@ export function CarTrack({ car }: CarItemProps) {
     await model.deleteCar(car.id);
     updateNeeded();
   };
-
-  // const selCar = () => {
-  //     selectCar(car)
-  // }
-
 
   return (
         <div className='garage_unit'>
@@ -42,7 +37,7 @@ export function CarTrack({ car }: CarItemProps) {
                     <button onClick={updateNeeded}>Reset</button>
                 </div>
                 <div className="garage_track">
-                    <CarSvg color={car.color} type={randomNumInRange(1, 4)}></CarSvg>
+                    <CarSvg color={car.color} type={getTypeFromId(car.id)}></CarSvg>
                 </div>
             </div>
 
