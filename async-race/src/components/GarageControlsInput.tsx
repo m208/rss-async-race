@@ -9,12 +9,15 @@ interface GarageControlsInputProps {
   carSelectionControl: boolean
 }
 
+const defaultColor = '#ffffff';
+const defaultName = '';
+
 export function GarageControlsInput({ buttonText, action, carSelectionControl = false }: GarageControlsInputProps) {
 
   const { selectedCar, selectCar } = useContext(GarageContext);
 
-  const [color, setColor] = useState('#ffffff');
-  const [name, setName] = useState('');
+  const [color, setColor] = useState(defaultColor);
+  const [name, setName] = useState(defaultName);
   const [id, setId] = useState(0);
 
   useEffect(() => {
@@ -44,19 +47,18 @@ export function GarageControlsInput({ buttonText, action, carSelectionControl = 
   };
 
   const resetFields = () =>{
-    setColor('#ffffff');
-    setName('');
+    setColor(defaultColor);
+    setName(defaultName);
   };
 
   const click = () => {
     if (carSelectionControl && selectedCar) {
       action(selectedCar);
-      resetFields();
+      selectCar(null);
     } else {
       action({ name, color, id });
-      resetFields();
     }
-
+    resetFields();
   };
 
   return (
