@@ -2,10 +2,14 @@ import React from 'react';
 
 import './App.css';
 import { Garage } from './components/Garage';
+import { GarageState } from './context/garageContext';
 
 function App() {
   return (
-      <Garage></Garage>
+    <GarageState>
+       <Garage></Garage>
+    </GarageState>
+     
   );
 }
 

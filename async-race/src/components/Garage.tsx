@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react'
-import { getCars } from '../utils/fetchData';
-import { ICar } from '../utils/types';
+import React, { useContext, useEffect, useState } from 'react'
+import { GarageContext } from '../context/garageContext';
+import { model } from '../model/fetchData';
+import { ICar } from '../types/types';
 import { CarTrack } from './CarTrack'
 import { GarageControls } from './GarageControls';
 
@@ -10,18 +11,19 @@ export function Garage() {
     const [pageNum, setpageNum] = useState(1)
 
     const [cars, setCars] = useState<Array<ICar>>([]);
-
+    const {updateState, updated} = useContext(GarageContext)
 
     useEffect(() => {
-        if (cars.length === 0) {
-            getCars1();
+        if (!updateState) {
+            loadCars();
         }
     });
 
-    const getCars1 = async () => {
-        const data: ICar[] = await getCars();
+    const loadCars = async () => {
+        const data: ICar[] = await model.getCars();
         setCars(data)
-        console.log(data);
+        setCarCount(data.length);
+        updated()
     }
     const carItems = cars.map(car =>
         <CarTrack car={car} key={car.id}></CarTrack>
@@ -37,6 +39,8 @@ export function Garage() {
                 {carItems}
             </div>
         </>
+
+
 
 
     )

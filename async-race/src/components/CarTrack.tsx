@@ -1,5 +1,7 @@
-import React, { useState } from 'react'
-import { ICar } from '../utils/types'
+import React, { useContext, useState } from 'react'
+import { GarageContext } from '../context/garageContext'
+import { model } from '../model/fetchData'
+import { ICar } from '../types/types'
 import { CarSvg } from './CarSvg'
 
 interface CarItemProps {
@@ -7,13 +9,22 @@ interface CarItemProps {
   }
 
 export function CarTrack({ car }: CarItemProps) {
-    const [carCount, setCarCount] = useState(0)
-    const [pageNum, setpageNum] = useState(1)
+    const {updateNeeded, updated} = useContext(GarageContext);
+
+
+    const deleteCar = async () => {
+        console.log('del ', car.id);
+        await model.deleteCar(car.id);
+        updateNeeded()
+    }
+
+
+
     return (
         <div className='garage_unit'>
 
         <div className='garage_edit-car'>
-            <button>Remove</button>
+            <button onClick={deleteCar}>Remove</button>
             <button>Edit</button>
 
             <span className='garage_name'>{car.name}</span>
@@ -21,8 +32,8 @@ export function CarTrack({ car }: CarItemProps) {
 
         <div className="garage_lane">
         <div className='garage_race-car'>
-            <button>Go</button>
-            <button>Reset</button>
+            <button onClick={updateNeeded}>Go</button>
+            <button onClick={updateNeeded}>Reset</button>
         </div>
         <div className="garage_track">
         <CarSvg color={car.color} type={randomNumInRange(1, 4)}></CarSvg>
