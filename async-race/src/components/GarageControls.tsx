@@ -19,6 +19,12 @@ export function GarageControls() {
     updateNeeded();
   };
 
+  const generateCars = async () =>{
+    await model.generateCars(100);
+    updateNeeded();
+  };
+
+
   return (
         <div className="garage_controls">
             <GarageControlsInput 
@@ -32,7 +38,7 @@ export function GarageControls() {
             <div className="controls_line">
                 <button className='btn btn-light'>RACE</button>
                 <button className='btn btn-light'>RESET</button>
-                <button className='btn btn-light'>GENERATE CARS</button>
+                <button onClick={generateCars} className='btn btn-light'>GENERATE CARS</button>
             </div>
 
         </div>
