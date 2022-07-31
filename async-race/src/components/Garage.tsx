@@ -36,7 +36,7 @@ export function Garage() {
         <>
             <GarageControls></GarageControls>
             <div className='garage'>
-                <p>{selectedCar?.name}</p>
+                {/* <p>{selectedCar?.name}</p> */}
                 <h3>Garage ({carCount})</h3>
                 <h4>Page #{pageNum}</h4>
                 {carItems}

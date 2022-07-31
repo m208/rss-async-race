@@ -31,18 +31,14 @@ export function GarageControlsInput({ buttonText, action, carSelectionControl = 
   const changeColor = (event: React.KeyboardEvent<HTMLInputElement>) => {
     setColor(event.target.value);
     if (carSelectionControl && selectedCar) {
-      const car: ICar = { ...selectedCar };
-      car.color = event.target.value;
-      selectCar(car);
+      selectedCar.color = event.target.value;
     } 
   };
 
   const changeName = (event: React.KeyboardEvent<HTMLInputElement>) => {
     setName(event.target.value);
     if (carSelectionControl && selectedCar) {
-      const car: ICar = { ...selectedCar };
-      car.name = event.target.value;
-      selectCar(car);
+      selectedCar.name = event.target.value;
     }
   };
 
