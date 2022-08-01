@@ -1,5 +1,5 @@
 import { ICar } from '../types/types';
-import { getJson, postJson } from './fetch';
+import { getJson, getJsonWithTotal, postJson } from './fetch';
 import { getRandomCar, getRandomName } from './garage';
 
 //const baseApiUrl2 = 'https://rss-async-race-api.herokuapp.com';
@@ -8,9 +8,10 @@ const baseApiUrl = 'http://127.0.0.1:3000';
 
 export const model = {
 
-  getCars: async () => {
-    const url = baseApiUrl + '/garage';
-    const data: ICar[] = await getJson(url, 'GET');
+  getCars: async (page?: number ) => {
+    
+    const url = `${baseApiUrl}/garage${page ? `?_page=${page}` : ''}`;
+    const data = await getJsonWithTotal(url, 'GET');
     return data;
   },
 
