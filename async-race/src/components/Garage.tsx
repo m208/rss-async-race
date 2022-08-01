@@ -1,44 +1,55 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { GarageContext } from '../context/garageContext';
+import { PaginationContext } from '../context/paginationContext';
 import { model } from '../model/fetchData';
 import { ICar } from '../types/types';
 import { CarTrack } from './CarTrack';
 import { GarageControls } from './GarageControls';
+import { Paginator } from './Paginator';
 
+const CarsPerPage = 10;
 
 export function Garage() {
   const [carCount, setCarCount] = useState(0);
-  const [pageNum ] = useState(1);
 
   const [cars, setCars] = useState<Array<ICar>>([]);
-  const { updateState, updated,  selectedCar } = useContext(GarageContext);
+  const { updateState, updated, updateNeeded,  selectedCar } = useContext(GarageContext);
+  const { currentPage, lastPage, setPage, setPageCount } = useContext(PaginationContext);
 
-  const loadCars = async () => {
-    const data: ICar[] = await model.getCars();
-    setCars(data);
-    setCarCount(data.length);
-    updated();
+  const loadCars = async (num?: number) => {
+    
+    const res = await model.getCars(num);
+    const carsArray: ICar[] = res.data as ICar[];
+
+    if (carsArray.length === 0 && currentPage !== 1) {
+      setPage(currentPage - 1);
+    } else {
+      setCars(carsArray);
+      const count = res.total ? +res.total : 0;
+      setCarCount(count);
+      setPageCount(Math.ceil(count / CarsPerPage));
+    
+      updated();
+    }
   };
   
   useEffect(() => {
     if (!updateState) {
-      loadCars();
+      loadCars(currentPage);
     }
   });
-
 
   const carItems = cars.map(car =>
         <CarTrack car={car} key={car.id}></CarTrack>,
   );
 
-
   return (
         <>
             <GarageControls></GarageControls>
             <div className='garage'>
-                {/* <p>{selectedCar?.name}</p> */}
                 <h3>Garage ({carCount})</h3>
-                <h4>Page #{pageNum}</h4>
+                <h4>Page #{currentPage} / {lastPage}</h4>
+                <Paginator></Paginator>
                 {carItems}
             </div>
         </>
