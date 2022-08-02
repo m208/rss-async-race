@@ -12,9 +12,9 @@ const carsPerPage = 7;
 export function Garage() {
   const [carCount, setCarCount] = useState(0);
 
-  const [cars, setCars] = useState<Array<ICar>>([]);
   const { updateState, updated, updateNeeded,  selectedCar } = useContext(GarageContext);
   const { currentPage, lastPage, setPage, setPageCount } = useContext(PaginationContext);
+  const { currentCars, setCurrentCars } = useContext(GarageContext);
 
   const loadCars = async (num?: number, limit?: number) => {
     
@@ -24,7 +24,7 @@ export function Garage() {
     if (carsArray.length === 0 && currentPage !== 1) {
       setPage(currentPage - 1);
     } else {
-      setCars(carsArray);
+      setCurrentCars(carsArray);
       const count = res.total ? +res.total : 0;
       setCarCount(count);
       setPageCount(Math.ceil(count / carsPerPage));
@@ -39,7 +39,7 @@ export function Garage() {
     }
   });
 
-  const carItems = cars.map(car =>
+  const carItems = currentCars.map(car =>
         <CarTrack car={car} key={car.id}></CarTrack>,
   );
 
