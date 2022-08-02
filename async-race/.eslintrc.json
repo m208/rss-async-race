@@ -12,8 +12,9 @@
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
-        "project":  ["./async-race/tsconfig.json"] ,
-        //"project": "d:/_webdev/rss-js-fe/rss-async-race/m208-jsfe2022q1/async-race/tsconfig.json" ,
+        "project":  ["./tsconfig.json"] ,
+        //"project":  ["./async-race/tsconfig.json"] ,
+        
         "ecmaFeatures": {
             "jsx": true
         },
