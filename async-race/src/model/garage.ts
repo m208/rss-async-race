@@ -14,3 +14,6 @@ export function getRandomName() {
   return brand + ' ' + modal;
 }
 
+export function getTypeFromId(id: number) {
+  return  (id % 4) + 1;
+}

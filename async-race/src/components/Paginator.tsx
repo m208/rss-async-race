@@ -1,21 +1,25 @@
 import React, { Dispatch, SetStateAction, useContext, useState } from 'react';
-import { PaginationContext } from '../context/paginationContext';
+import { IPaginationContext } from '../types/types';
 
-export function Paginator() {
 
-  const { currentPage, lastPage, setPage, setPageCount } = useContext(PaginationContext);
+export function Paginator({ currentPage, lastPage, setPage, setPageCount, callback }: IPaginationContext) {
 
   const prevPage = () => {
-    if (currentPage > 1) setPage(currentPage - 1);
-
+    if (currentPage > 1) { 
+      setPage(currentPage - 1); 
+      callback();
+    }
   };
 
   const nextPage = () => {
-    if (currentPage < lastPage) setPage(currentPage + 1);
+    if (currentPage < lastPage) {
+      setPage(currentPage + 1);  
+      callback();
+    }
   };
 
-  const firstPage = () => { setPage(1); };
-  const endPage = () => { setPage(lastPage); };
+  const firstPage = () => { setPage(1);  callback(); };
+  const endPage = () => { setPage(lastPage);  callback();};
 
 
   return (

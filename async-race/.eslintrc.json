@@ -8,12 +8,14 @@
         "plugin:react/recommended",
         "plugin:@typescript-eslint/recommended",
         "plugin:import/recommended",
-        "airbnb-typescript"
+        "airbnb-typescript",
+        "airbnb-typescript/base"
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
         "project":  ["./tsconfig.json"] ,
         //"project":  ["./async-race/tsconfig.json"] ,
+        //"project":  ["./async-race/tsconfig.json", "./tsconfig.json"] ,
         
         "ecmaFeatures": {
             "jsx": true

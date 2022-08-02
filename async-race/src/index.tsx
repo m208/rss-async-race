@@ -4,7 +4,6 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
-import { PaginationState } from './context/paginationContext';
 import { GarageState } from './context/garageContext';
 
 const root = ReactDOM.createRoot(
@@ -13,9 +12,7 @@ const root = ReactDOM.createRoot(
 root.render(
   <BrowserRouter>
     <GarageState>
-      <PaginationState>
         <App />
-      </PaginationState>
     </GarageState>
   </BrowserRouter>,
 );
