@@ -7,7 +7,7 @@ import { CarTrack } from './CarTrack';
 import { GarageControls } from './GarageControls';
 import { Paginator } from './Paginator';
 
-const CarsPerPage = 10;
+const carsPerPage = 7;
 
 export function Garage() {
   const [carCount, setCarCount] = useState(0);
@@ -16,9 +16,9 @@ export function Garage() {
   const { updateState, updated, updateNeeded,  selectedCar } = useContext(GarageContext);
   const { currentPage, lastPage, setPage, setPageCount } = useContext(PaginationContext);
 
-  const loadCars = async (num?: number) => {
+  const loadCars = async (num?: number, limit?: number) => {
     
-    const res = await model.getCars(num);
+    const res = await model.getCars(num, limit);
     const carsArray: ICar[] = res.data as ICar[];
 
     if (carsArray.length === 0 && currentPage !== 1) {
@@ -27,7 +27,7 @@ export function Garage() {
       setCars(carsArray);
       const count = res.total ? +res.total : 0;
       setCarCount(count);
-      setPageCount(Math.ceil(count / CarsPerPage));
+      setPageCount(Math.ceil(count / carsPerPage));
     
       updated();
     }
@@ -35,7 +35,7 @@ export function Garage() {
   
   useEffect(() => {
     if (!updateState) {
-      loadCars(currentPage);
+      loadCars(currentPage, carsPerPage);
     }
   });
 

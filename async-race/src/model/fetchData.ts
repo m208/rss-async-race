@@ -8,9 +8,9 @@ const baseApiUrl = 'http://127.0.0.1:3000';
 
 export const model = {
 
-  getCars: async (page?: number ) => {
+  getCars: async (page?: number, limit?: number ) => {
     
-    const url = `${baseApiUrl}/garage${page ? `?_page=${page}` : ''}`;
+    const url = `${baseApiUrl}/garage${page ? `?_page=${page}` : ''}${limit ? `&_limit=${limit}` : ''}`;
     const data = await getJsonWithTotal(url, 'GET');
     return data;
   },
