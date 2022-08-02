@@ -1,4 +1,4 @@
-import { ICar } from '../types/types';
+import { ICar, IWinner } from '../types/types';
 import { getJson, getJsonWithTotal, postJson } from './fetch';
 import { getRandomCar, getRandomName } from './garage';
 
@@ -7,9 +7,13 @@ const baseApiUrl = 'http://127.0.0.1:3000';
 
 
 export const model = {
+  getCar: async (id: number) =>{
+    const url = `${baseApiUrl}/garage/${id}`;
+    const data: ICar = await getJson(url, 'GET');
+    return data;
+  },
 
   getCars: async (page?: number, limit?: number ) => {
-    
     const url = `${baseApiUrl}/garage${page ? `?_page=${page}` : ''}${limit ? `&_limit=${limit}` : ''}`;
     const data = await getJsonWithTotal(url, 'GET');
     return data;
@@ -35,7 +39,7 @@ export const model = {
 
   generateCars: async (count: number) => {
 
-    const requests = Array(count).fill(0).map(el=>{
+    const cars = Array(count).fill(0).map(el=>{
       return {
         color: getRandomCar(),
         name: getRandomName(),
@@ -43,9 +47,15 @@ export const model = {
       };
     });
 
-    for (const i of requests) {
-      await model.createCar(i);
+    for (const c of cars) {
+      await model.createCar(c);
     }
+  },
+
+  getWinners: async () => {
+    const url = baseApiUrl + '/winners?_page=1&_limit=10&_sort=time&_order=asc';
+    const data: IWinner[] = await getJson(url, 'GET');
+    return data;
   },
 
   

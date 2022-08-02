@@ -37,3 +37,26 @@ body {
 .garage_name {
   padding-left: 1em;
 }
+
+
+.winners {
+  display: flex;
+  flex-direction: column;
+}
+
+.winners_line,
+.winners_head {
+  display: flex;
+  flex-direction: row;
+  width: 80%;
+}
+
+.winners_line div,
+.winners_head div {
+  padding: 1em;
+  width: 5%;
+}
+
+.winners_name {
+  width: 50% !important;
+}

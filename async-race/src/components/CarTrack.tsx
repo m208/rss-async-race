@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { GarageContext } from '../context/garageContext';
 import { model } from '../model/fetchData';
+import { getTypeFromId } from '../model/garage';
 import { ICar } from '../types/types';
 import { CarSvg } from './CarSvg';
 
@@ -8,9 +9,7 @@ interface CarItemProps {
   car: ICar
 }
 
-function getTypeFromId(id: number) {
-  return  (id % 4) + 1;
-}
+
 
 export function CarTrack({ car }: CarItemProps) {
   const { updateNeeded, selectCar } = useContext(GarageContext);
