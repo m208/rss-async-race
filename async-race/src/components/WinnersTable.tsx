@@ -2,38 +2,43 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { model } from '../model/fetchData';
 import { getFullWinnerData } from '../model/winners';
-import { ICar, IWinner, IwinnersFull } from '../types/types';
+import { IAppState, ICar, IWinner, IwinnersFull } from '../types/types';
 import { Paginator } from './Paginator';
 import { WinnerLine } from './WinnerLine';
 import { WinnersHeader } from './WinnersHeader';
 
+interface WinnersProps {
+  appState: IAppState
+}
 
-export function WinnersTable() {
+const winnersPerPage = 2;
+
+export function WinnersTable({ appState }: WinnersProps) {
   const [updateNeeded, setUpdateNeeded] = useState(true);
   const [winnersFull, setWinnersFull] = useState<Array<IwinnersFull>>([]);
 
-  const getWinners = async () => {
-    const data = await model.getWinners();
-    const fullData = await getFullWinnerData(data);
+  const { currentPage, lastPage, setPage, setPageCount } = appState.winnersPagState;
+  appState.winnersPagState.onChange = ()=>{
+    setUpdateNeeded(prev=>!prev);
+  };
 
+  const getWinners = async (page: number, limit: number) => {
+    const data = await model.getWinners(page, limit);
+    const winners = data.data as IWinner[];
+    const count = data.total as string; 
+    const fullData = await getFullWinnerData(winners);
+
+    setPageCount(+count / winnersPerPage);
     setWinnersFull(fullData);
-    console.log(fullData);
-    
   };
 
   useEffect( () => {
     if (updateNeeded) {
-      getWinners();
+      getWinners(currentPage, winnersPerPage);
       setUpdateNeeded(false);
     }
     
   });
-
-  const car = {
-    id: 0,
-    name: 'name',
-    color: 'red',
-  };
 
   const winnerItems = winnersFull.map((el, i) =>
     <WinnerLine index={i} winner={el} key={el.id}></WinnerLine>,
@@ -41,7 +46,7 @@ export function WinnersTable() {
 
   return (
     <div className="winners">
-      {/* <Paginator {...paginationContext} ></Paginator> */}
+      <Paginator {...appState.winnersPagState} ></Paginator>
         <WinnersHeader/>
         {winnerItems}
     </div>

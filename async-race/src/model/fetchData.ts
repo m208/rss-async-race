@@ -52,9 +52,9 @@ export const model = {
     }
   },
 
-  getWinners: async () => {
-    const url = baseApiUrl + '/winners?_page=1&_limit=10&_sort=time&_order=asc';
-    const data: IWinner[] = await getJson(url, 'GET');
+  getWinners: async (page: number, limit: number ) => {
+    const url = baseApiUrl + `/winners?_page=${page}&_limit=${limit}&_sort=time&_order=asc`;
+    const data = await getJsonWithTotal(url, 'GET');
     return data;
   },
 
