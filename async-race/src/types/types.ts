@@ -18,5 +18,11 @@ export interface IPaginationContext {
   setPage: (num: number) => void
   setPageCount: (num: number) => void
 
-  callback: ()=>void
+  onChange: ()=>void
+}
+
+
+export interface IAppState {
+  garagePagState: IPaginationContext
+  winnersPagState: IPaginationContext
 }

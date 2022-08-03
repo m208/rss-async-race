@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { GarageContext } from '../context/garageContext';
-import { IPaginationContext, ICar } from '../types/types';
+import { IPaginationContext, ICar, IAppState } from '../types/types';
 import { model } from '../model/fetchData';
 import { CarTrack } from './CarTrack';
 import { GarageControls } from './GarageControls';
@@ -9,17 +9,17 @@ import { Paginator } from './Paginator';
 const carsPerPage = 7;
 
 interface GarageProps {
-  paginationState: IPaginationContext
+  appState: IAppState
 }
 
-export function Garage({ paginationState }: GarageProps) {
+export function Garage({ appState }: GarageProps) {
   const [carCount, setCarCount] = useState(0);
 
   const { updateState, updated, updateNeeded,  selectedCar } = useContext(GarageContext);
   const { currentCars, setCurrentCars } = useContext(GarageContext);
 
-  const { currentPage, lastPage, setPage, setPageCount } = paginationState;
-  paginationState.callback = updateNeeded;
+  const { currentPage, lastPage, setPage, setPageCount } = appState.garagePagState;
+  appState.garagePagState.onChange = updateNeeded;
 
   const loadCars = async (num?: number, limit?: number) => {
     
@@ -54,7 +54,7 @@ export function Garage({ paginationState }: GarageProps) {
             <div className='garage'>
                 <h3>Garage ({carCount})</h3>
                 <h4>Page #{currentPage} / {lastPage}</h4>
-                <Paginator {...paginationState} ></Paginator>
+                <Paginator {...appState.garagePagState} ></Paginator>
                 {carItems}
             </div>
         </>
