@@ -1,4 +1,4 @@
-import { ICar, IWinner } from '../types/types';
+import { ICar, IWinner, TSortDir, TSortOptions } from '../types/types';
 import { getJson, getJsonWithTotal, postJson } from './fetch';
 import { getRandomCar, getRandomName } from './garage';
 
@@ -52,8 +52,9 @@ export const model = {
     }
   },
 
-  getWinners: async (page: number, limit: number ) => {
-    const url = baseApiUrl + `/winners?_page=${page}&_limit=${limit}&_sort=time&_order=asc`;
+  getWinners: async (page: number, limit: number, sort: TSortOptions, order: TSortDir = 'Asc') => {
+    const url = baseApiUrl + 
+    `/winners?_page=${page}&_limit=${limit}&_sort=${sort.toLowerCase()}&_order=${order.toLowerCase()}`;
     const data = await getJsonWithTotal(url, 'GET');
     return data;
   },

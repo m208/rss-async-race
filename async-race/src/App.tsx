@@ -5,7 +5,7 @@ import { Garage } from './components/Garage';
 import { Navigation } from './components/Navigation';
 import { WinnersTable } from './components/WinnersTable';
 import { createPagState } from './context/appState';
-import { IAppState } from './types/types';
+import { IAppState, TSortDir, TSortOptions } from './types/types';
 
 
 function App() {
@@ -14,9 +14,15 @@ function App() {
   const winnersCurrPage = useState(1);
   const winnersLastPage = useState(1);
 
+  const [sortBy, setSortBy] = useState<TSortOptions>('Time');
+  const [activeSorter, setActiveSorter] = useState<TSortDir>('Asc');
+  const [timeSorter, setTimeSorter] = useState<TSortDir>('Asc');
+  const [winSorter, setWinSorter] = useState<TSortDir>('Asc');
+
   const appState: IAppState = {
     garagePagState: createPagState(garageCurrPage, garageLastPage),
     winnersPagState: createPagState(winnersCurrPage, winnersLastPage),
+    winnersSort: { sortBy, setSortBy, activeSorter, setActiveSorter, timeSorter, setTimeSorter, winSorter, setWinSorter, onChange: ()=>{} },
   };
 
   return (

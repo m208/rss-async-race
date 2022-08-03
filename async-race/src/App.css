@@ -60,3 +60,20 @@ body {
 .winners_name {
   width: 50% !important;
 }
+
+.winners_wins,
+.winners_time {
+  cursor: pointer;
+}
+
+.active {
+  color: yellowgreen;
+}
+
+.sort_arrow {
+  display: none;
+}
+
+.active .sort_arrow {
+  display: inline;
+}
