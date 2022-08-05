@@ -27,7 +27,7 @@ export function Paginator({ currentPage, lastPage, setPage, setPageCount, onChan
       <button onClick={firstPage}>First</button>
       <button onClick={prevPage}>Prev</button>
 
-      <span>{currentPage}</span>
+      <span>{currentPage}/{lastPage}</span>
 
       <button onClick={nextPage} >Next</button>
       <button onClick={endPage} >Last</button>

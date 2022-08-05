@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { GarageContext } from '../context/garageContext';
 import { IPaginationContext, ICar, IAppState } from '../types/types';
 import { model } from '../model/fetchData';
-import { CarTrack } from './CarTrack';
+import { GarageItem } from './CarTrack';
 import { GarageControls } from './GarageControls';
 import { Paginator } from './Paginator';
 
@@ -45,7 +45,7 @@ export function Garage({ appState }: GarageProps) {
   });
 
   const carItems = currentCars.map(car =>
-        <CarTrack car={car} key={car.id}></CarTrack>,
+        <GarageItem car={car} key={car.id}/>,
   );
 
   return (
@@ -53,9 +53,8 @@ export function Garage({ appState }: GarageProps) {
             <GarageControls></GarageControls>
             <div className='garage'>
                 <h3>Garage ({carCount})</h3>
-                <h4>Page #{currentPage} / {lastPage}</h4>
-                <Paginator {...appState.garagePagState} ></Paginator>
                 {carItems}
+                <Paginator {...appState.garagePagState} ></Paginator>
             </div>
         </>
 
