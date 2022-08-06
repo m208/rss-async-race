@@ -1,4 +1,4 @@
-import { ICar, IWinner, TSortDir, TSortOptions } from '../types/types';
+import { ICar, ICarSpeed, IWinner, TEngineStatus, TSortDir, TSortOptions } from '../types/types';
 import { getJson, getJsonWithTotal, postJson } from './fetch';
 import { getRandomCar, getRandomName } from './garage';
 
@@ -59,8 +59,29 @@ export const model = {
     return data;
   },
 
+  start: async (id: number) => {
+    return  model.engine(id, 'started');
+  },
+
+  stop: async (id: number) => {
+    return  model.engine(id, 'stopped');
+  },
   
+  drive: async (id: number) => {
+    return  model.engine(id, 'drive');
+  },
+
+  engine: async (id: number, action: TEngineStatus) => {
+    const url = baseApiUrl + `/engine?id=${id}&status=${action}`;
+    const data = await getJsonWithTotal(url, 'PATCH') as JsonData;
+    return data;
+  },
 
 
 };
 
+export type JsonData = {
+  status: number;
+  total: string | null;
+  data: ICar[] | IWinner[] | ICarSpeed;
+};

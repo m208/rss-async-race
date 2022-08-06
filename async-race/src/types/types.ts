@@ -1,3 +1,5 @@
+import { ICarState } from '../model/Car';
+
 export interface ICar {
   id: number
   name: string
@@ -8,6 +10,11 @@ export interface IWinner {
   id: number
   wins: number
   time: number
+}
+
+export interface ICarSpeed {
+  velocity: number
+  distance: number
 }
 
 export type IwinnersFull = Omit<ICar, 'id'> & IWinner;
@@ -37,7 +44,24 @@ export interface IAppState {
   garagePagState: IPaginationContext
   winnersPagState: IPaginationContext
   winnersSort: ISortContext  
+
+//  animationCount: IAnimState  // ?
+//  carState: TCarst  // ?
+}
+
+type TCarst = {
+  carState: ICarState[], setCarState: (value: React.SetStateAction<ICarState[]>) => void
+};
+
+export interface IAnimState {
+  counter: number
+  setCounter: (value: React.SetStateAction<number>) => void
+  startAnim: (dur:number)=>void
+  shouldAnimate: boolean,
+  setShouldAnimate: (value: React.SetStateAction<boolean>) => void,
 }
 
 export type TSortDir = 'Asc' | 'Desc';
 export type TSortOptions = 'Wins' | 'Time';
+
+export type TEngineStatus = 'started' | 'stopped' | 'drive';
