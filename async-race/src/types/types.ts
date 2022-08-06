@@ -65,3 +65,5 @@ export type TSortDir = 'Asc' | 'Desc';
 export type TSortOptions = 'Wins' | 'Time';
 
 export type TEngineStatus = 'started' | 'stopped' | 'drive';
+
+export type TRaceWinner = { id: number, name: string, time: number };

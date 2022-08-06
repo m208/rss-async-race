@@ -115,7 +115,7 @@ body {
 }
 
 .unit_track {
-  width: 100%;
+  width: 100px;
   height: 40px;
 }
 
@@ -128,4 +128,37 @@ body {
   line-height: 1.5em;
   width: 4em;
   margin: 0.2em;
+}
+
+/*--Anims--*/
+@keyframes ride {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(calc(100vw - 240px));
+  }
+}
+
+.ride {
+  animation-name: ride;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+.anim-pause {
+  animation-play-state: paused;
+}
+
+.broke::after {
+  margin-left: -2.6em;
+  content: "⚠️";
+  vertical-align: 35%;
+}
+
+.winner::after {
+  margin-left: -2.6em;
+  content: "🏆";
+  vertical-align: 35%;
 }

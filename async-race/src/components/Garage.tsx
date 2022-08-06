@@ -1,10 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { GarageContext } from '../context/garageContext';
-import { IPaginationContext, ICar, IAppState } from '../types/types';
+import { IPaginationContext, ICar, IAppState, TRaceWinner } from '../types/types';
 import { model } from '../model/fetchData';
 import { GarageItem } from './CarTrack';
 import { GarageControls } from './GarageControls';
 import { Paginator } from './Paginator';
+import { Winner } from './Winner';
 
 const carsPerPage = 7;
 
@@ -15,14 +16,18 @@ interface GarageProps {
 export function Garage({ appState }: GarageProps) {
   const [carCount, setCarCount] = useState(0);
 
-  const { updateState, updated, updateNeeded,  selectedCar } = useContext(GarageContext);
+  const [raceStart, setRaceStart] = useState(false);
+  const [raceReset, setRaceReset] = useState(false);
+  const [raceWinner, setraceWinner] = useState<TRaceWinner | null>(null);
+
+  const { updateState, updated, updateNeeded, selectedCar } = useContext(GarageContext);
   const { currentCars, setCurrentCars } = useContext(GarageContext);
 
   const { currentPage, lastPage, setPage, setPageCount } = appState.garagePagState;
   appState.garagePagState.onChange = updateNeeded;
 
   const loadCars = async (num?: number, limit?: number) => {
-    
+
     const res = await model.getCars(num, limit);
     const carsArray: ICar[] = res.data as ICar[];
 
@@ -33,30 +38,52 @@ export function Garage({ appState }: GarageProps) {
       const count = res.total ? +res.total : 0;
       setCarCount(count);
       setPageCount(Math.ceil(count / carsPerPage));
-    
+
       updated();
     }
   };
-  
+
   useEffect(() => {
     if (!updateState) {
       loadCars(currentPage, carsPerPage);
     }
   });
 
+  const startRace = () =>{
+    setRaceReset(false);
+    setRaceStart(true);
+  };
+  const resetRace = () => {
+    setraceWinner(null);
+    setRaceStart(false);
+    setRaceReset(true);
+  };
+  const setWinner = (winner: TRaceWinner ) =>{
+    setraceWinner(prev=>prev ? null : winner);
+    setRaceStart(false);
+  };
+
   const carItems = currentCars.map(car =>
-        <GarageItem car={car} key={car.id}/>,
+    <GarageItem 
+      car={car} 
+      raceStart={raceStart} 
+      raceReset={raceReset} 
+      setWinner={setWinner}
+      raceWinner={raceWinner}
+      key={car.id} 
+    />,
   );
 
   return (
-        <>
-            <GarageControls></GarageControls>
-            <div className='garage'>
-                <h3>Garage ({carCount})</h3>
-                {carItems}
-                <Paginator {...appState.garagePagState} ></Paginator>
-            </div>
-        </>
+    <>
+      <GarageControls setRaceStart={startRace} setRaceReset={resetRace} />
+      <div className='garage'>
+        <h3>Garage ({carCount})</h3>
+        {(raceWinner !== null) && <Winner data ={raceWinner}/>}
+        {carItems}
+        <Paginator {...appState.garagePagState} />
+      </div>
+    </>
 
 
 

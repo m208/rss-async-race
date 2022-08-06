@@ -16,6 +16,11 @@ export interface ICarState {
   setEngineStatus: React.Dispatch<React.SetStateAction<TEngineStatus>>;
   duration: number;
   setDuration: React.Dispatch<React.SetStateAction<number>>;
+  shouldAnimate: boolean;
+  setshouldAnimate: React.Dispatch<React.SetStateAction<boolean>>;
+  
+  finished: boolean;
+  setFinished: React.Dispatch<React.SetStateAction<boolean>>;
 
   reset: () => void;
   broke: () => void;
@@ -24,8 +29,6 @@ export interface ICarState {
   stop: () => Promise<void>;
   drive: () => Promise<void>;
   ride: () => Promise<void>;
-
-  stopLocal: () => void;
 }
 
 export function getCarStateObject(c: ICar) {
@@ -34,27 +37,36 @@ export function getCarStateObject(c: ICar) {
   const [carSpeed, setCarSpeed] = useState(0);
   const [engineStatus, setEngineStatus] = useState<TEngineStatus>('stopped');
   const [duration, setDuration] = useState(0);
+  const [shouldAnimate, setshouldAnimate] = useState(false);
+  const [finished, setFinished] = useState(false);
 
   const carObj = {
-    id:car.id,
-    color:car.color,
-    name:car.name,
-    
+    id: car.id,
+    color: car.color,
+    name: car.name,
+
     duration, setDuration,
-    car, setCar, broken, setBroken, carSpeed, 
+    shouldAnimate, setshouldAnimate,
+    finished, setFinished,
+    car, setCar, broken, setBroken, carSpeed,
     setCarSpeed, engineStatus, setEngineStatus,
 
-    reset: () => { },
+    reset: async () => { 
+      await carObj.stop();
+      setshouldAnimate(false);
+      setBroken(false);
+      setFinished(false);
+    },
 
     broke: () => { setBroken(true); },
 
-    finish: () => { setBroken(false); },
+    finish: () => { setFinished(true); },
 
     start: async () => {
       const start = await model.start(car.id);
       setEngineStatus('started');
       const speed = (start.data as ICarSpeed).velocity;
-      setDuration( (start.data as ICarSpeed).distance / 1000 / speed );
+      setDuration((start.data as ICarSpeed).distance / 1000 / speed);
 
       setCarSpeed(speed);
     },
@@ -68,29 +80,22 @@ export function getCarStateObject(c: ICar) {
 
     drive: async () => {
       setEngineStatus('drive');
-      const drive = await model.drive(car.id);
-      if (drive.status === 500) carObj.broke();
-      else carObj.finish();
-      
-      setEngineStatus('stopped');
-      setCarSpeed(0);
+      setshouldAnimate(true);
+      try {
+        const drive = await model.drive(car.id);
+        carObj.finish();
+      } catch (error) {
+        carObj.broke();
+      } finally {
+        setEngineStatus('stopped');
+        setCarSpeed(0);
+      }
     },
 
     ride: async () => {
-      console.log('ride');
-        
       await carObj.start();
       await carObj.drive();
-
-      console.log('rede ended');
-      
     },
-
-    stopLocal: () => {
-      setEngineStatus('stopped');
-      setCarSpeed(0);
-    },
-
   };
 
   return carObj;

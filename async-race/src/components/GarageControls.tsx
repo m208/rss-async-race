@@ -4,9 +4,12 @@ import { model } from '../model/fetchData';
 import { ICar } from '../types/types';
 import { GarageControlsInput } from './GarageControlsInput';
 
+interface IGarageControlsProps {
+  setRaceStart:  React.Dispatch<React.SetStateAction<boolean>>
+  setRaceReset: React.Dispatch<React.SetStateAction<boolean>>
+}
 
-
-export function GarageControls() {
+export function GarageControls({ setRaceStart, setRaceReset }: IGarageControlsProps) {
   const { updateNeeded } = useContext(GarageContext);
 
   const createCar = async (car: ICar) => {
@@ -36,8 +39,8 @@ export function GarageControls() {
             ></GarageControlsInput>
 
             <div className="controls_line">
-                <button className='btn btn-light'>RACE</button>
-                <button className='btn btn-light'>RESET</button>
+                <button onClick={()=>{setRaceStart(true);}} className='btn btn-light'>RACE</button>
+                <button onClick={()=>{setRaceReset(true);}} className='btn btn-light'>RESET</button>
                 <button onClick={generateCars} className='btn btn-light'>GENERATE CARS</button>
             </div>
 
