@@ -29,8 +29,8 @@ export function WinnersHeader(  sortState  : ISortContext) {
 
   return (
     <div className="winners_head">
-      <div className="winners_index">#</div>
-      <div className="winners_name">Name</div>
+      <div className="winners_index">№</div>
+      <div className="winners_name">Winner</div>
       <div
         className={`winners_wins ${sortBy === 'Wins' ? 'active' : ''}`}
         onClick={() => { clickToSort('Wins'); }}

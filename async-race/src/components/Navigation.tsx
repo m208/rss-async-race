@@ -8,10 +8,10 @@ export function Navigation() {
     <nav className="app_menu">
       <span>
         <Link to={homepage}>
-            <button>Garage1</button>
+            <button>Garage</button>
         </Link>
         <Link to={`${homepage}/winners`}>
-            <button>Winners1</button>
+            <button>Winners</button>
         </Link>
       </span>
     </nav>

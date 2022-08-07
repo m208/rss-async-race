@@ -48,6 +48,7 @@ body {
   display: flex;
   flex-direction: row;
   width: 80%;
+  height: 2.2em;
 }
 
 .winners_line div,
@@ -58,11 +59,24 @@ body {
 
 .winners_name {
   width: 50% !important;
+  display: flex;
+}
+
+.winner_name {
+  margin-left: 1em;
+}
+
+.winner_wins,
+.winner_time {
+  display: flex;
+  justify-content: center;
 }
 
 .winners_wins,
 .winners_time {
   cursor: pointer;
+  display: flex;
+  justify-content: center;
 }
 
 .active {

@@ -14,10 +14,10 @@ export function WinnerLine({ index, winner  }: WinnerLineProps) {
         <div className="winners_index">{index}</div>
         <div className="winners_name">
         <CarSvg color={winner.color} type={getTypeFromId(winner.id)}></CarSvg>
-          {winner.name}
+          <span className="winner_name">{winner.name}</span>
           </div>
-        <div className="winners_wins">{winner.wins}</div>
-        <div className="winners_time">{winner.time.toFixed(2)}</div>
+        <div className="winner_wins">{winner.wins}</div>
+        <div className="winner_time">{winner.time.toFixed(2)}</div>
       </div>
   );
 }

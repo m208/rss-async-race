@@ -41,7 +41,7 @@ export function WinnersTable({ appState }: WinnersProps) {
   });
 
   const winnerItems = winnersFull.map((el, i) =>
-    <WinnerLine index={i + 1} winner={el} key={el.id}></WinnerLine>,
+    <WinnerLine index={i + ((currentPage - 1) * winnersPerPage) + 1} winner={el} key={el.id}></WinnerLine>,
   );
 
 
