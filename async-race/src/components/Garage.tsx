@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { GarageContext } from '../context/garageContext';
 import { IPaginationContext, ICar, IAppState, TRaceWinner } from '../types/types';
-import { model } from '../model/fetchData';
+import { manageWinnersDB, model } from '../model/fetchData';
 import { GarageItem } from './CarTrack';
 import { GarageControls } from './GarageControls';
 import { Paginator } from './Paginator';
@@ -64,7 +64,7 @@ export function Garage({ appState }: GarageProps) {
     setRaceStart(false);
     setshowWinnerModal(true);
 
-    await model.createWinner(winner);
+    await manageWinnersDB(winner);
 
 
   };

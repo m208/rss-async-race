@@ -1,4 +1,4 @@
-import { ICar, ICarSpeed, IWinner, TEngineStatus, TSortDir, TSortOptions } from '../types/types';
+import { ICar, ICarSpeed, IWinner, TEngineStatus, TRaceWinner, TSortDir, TSortOptions } from '../types/types';
 import { getJson, getJsonWithTotal, postJson } from './fetch';
 import { getRandomCar, getRandomName } from './garage';
 
@@ -52,13 +52,6 @@ export const model = {
     }
   },
 
-  getWinners: async (page: number, limit: number, sort: TSortOptions, order: TSortDir = 'Asc') => {
-    const url = baseApiUrl + 
-    `/winners?_page=${page}&_limit=${limit}&_sort=${sort.toLowerCase()}&_order=${order.toLowerCase()}`;
-    const data = await getJsonWithTotal(url, 'GET');
-    return data;
-  },
-
   start: async (id: number) => {
     return  model.engine(id, 'started');
   },
@@ -77,8 +70,46 @@ export const model = {
     return data;
   },
 
+  getWinners: async (page: number, limit: number, sort: TSortOptions, order: TSortDir = 'Asc') => {
+    const url = baseApiUrl + 
+    `/winners?_page=${page}&_limit=${limit}&_sort=${sort.toLowerCase()}&_order=${order.toLowerCase()}`;
+    const data = await getJsonWithTotal(url, 'GET');
+    return data;
+  },
+
+  createWinner: async (winner: TRaceWinner) => {
+    const url = baseApiUrl + '/winners';
+    const data = await postJson(url, 'POST', winner);
+    return data;
+  },
+
+  updateWinner: async (winner: TRaceWinner) => { 
+    const url = baseApiUrl + `/winners/${winner.id}`;
+    const data = await postJson(url, 'PUT', winner);
+    return data;
+  },
+
+  getWinner: async (id: number) => {
+    const url = baseApiUrl + `/winners/${id}`;
+    const data: TRaceWinner = await getJson(url, 'GET');
+    return data;
+  },
 
 };
+
+export async function manageWinnersDB(winner: TRaceWinner) {
+  try {
+    const existed = await model.getWinner(winner.id);
+    existed.wins += 1;
+    if (existed.time > winner.time) existed.time = winner.time;
+
+    await model.updateWinner(existed);
+
+  } catch (e) {
+
+    await model.createWinner(winner);
+  }
+}
 
 export type JsonData = {
   status: number;
