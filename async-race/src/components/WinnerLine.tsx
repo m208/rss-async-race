@@ -17,7 +17,7 @@ export function WinnerLine({ index, winner  }: WinnerLineProps) {
           {winner.name}
           </div>
         <div className="winners_wins">{winner.wins}</div>
-        <div className="winners_time">{winner.time}</div>
+        <div className="winners_time">{winner.time.toFixed(2)}</div>
       </div>
   );
 }

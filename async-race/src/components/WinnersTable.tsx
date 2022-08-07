@@ -28,8 +28,8 @@ export function WinnersTable({ appState }: WinnersProps) {
     const winners = data.data as IWinner[];
     const count = data.total as string;
     const fullData = await getFullWinnerData(winners);
-
-    setPageCount(+count / winnersPerPage);
+    
+    setPageCount(Math.ceil(+count / winnersPerPage));
     setWinnersFull(fullData);
   };
 
