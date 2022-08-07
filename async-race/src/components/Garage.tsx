@@ -19,6 +19,7 @@ export function Garage({ appState }: GarageProps) {
   const [raceStart, setRaceStart] = useState(false);
   const [raceReset, setRaceReset] = useState(false);
   const [raceWinner, setraceWinner] = useState<TRaceWinner | null>(null);
+  const [showWinnerModal, setshowWinnerModal] = useState(false);
 
   const { updateState, updated, updateNeeded, selectedCar } = useContext(GarageContext);
   const { currentCars, setCurrentCars } = useContext(GarageContext);
@@ -58,10 +59,17 @@ export function Garage({ appState }: GarageProps) {
     setRaceStart(false);
     setRaceReset(true);
   };
-  const setWinner = (winner: TRaceWinner ) =>{
+  const setWinner = async (winner: TRaceWinner ) =>{
     setraceWinner(prev=>prev ? null : winner);
     setRaceStart(false);
+    setshowWinnerModal(true);
+
+    await model.createWinner(winner);
+
+
   };
+
+  const closeWinnerModal = () =>{ setshowWinnerModal(false );};
 
   const carItems = currentCars.map(car =>
     <GarageItem 
@@ -79,7 +87,7 @@ export function Garage({ appState }: GarageProps) {
       <GarageControls setRaceStart={startRace} setRaceReset={resetRace} />
       <div className='garage'>
         <h3>Garage ({carCount})</h3>
-        {(raceWinner !== null) && <Winner data ={raceWinner}/>}
+        {(raceWinner && showWinnerModal) && <Winner data ={raceWinner} close={closeWinnerModal}/>}
         {carItems}
         <Paginator {...appState.garagePagState} />
       </div>

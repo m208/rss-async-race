@@ -25,7 +25,7 @@ export function GarageItem({ car, raceStart, raceReset, setWinner, raceWinner }:
   }, [raceStart]);
 
   useEffect(() => {
-    if (car2.finished && raceStart) setWinner({ id: car2.id, name: car2.name, time: car2.duration });
+    if (car2.finished && raceStart) setWinner({ id: car2.id, name: car2.name, time: car2.duration, wins: 1 });
   });
 
   useEffect(() => {
@@ -47,6 +47,7 @@ export function GarageItem({ car, raceStart, raceReset, setWinner, raceWinner }:
     `unit_track ${car2.shouldAnimate ? 'ride' : ''} 
       ${car2.broken ? 'anim-pause broke' : ''} 
       ${raceWinner !== null && car2.id === raceWinner.id ? 'winner' : ''  }
+      ${car2.awaiting ? 'awaiting' : ''  }
     `;
 
   return (

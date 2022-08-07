@@ -21,6 +21,8 @@ export interface ICarState {
   
   finished: boolean;
   setFinished: React.Dispatch<React.SetStateAction<boolean>>;
+  awaiting: boolean;
+  setAwaiting: React.Dispatch<React.SetStateAction<boolean>>;
 
   reset: () => void;
   broke: () => void;
@@ -39,6 +41,7 @@ export function getCarStateObject(c: ICar) {
   const [duration, setDuration] = useState(0);
   const [shouldAnimate, setshouldAnimate] = useState(false);
   const [finished, setFinished] = useState(false);
+  const [awaiting, setAwaiting] = useState(false);
 
   const carObj = {
     id: car.id,
@@ -48,6 +51,7 @@ export function getCarStateObject(c: ICar) {
     duration, setDuration,
     shouldAnimate, setshouldAnimate,
     finished, setFinished,
+    awaiting, setAwaiting,
     car, setCar, broken, setBroken, carSpeed,
     setCarSpeed, engineStatus, setEngineStatus,
 
@@ -63,7 +67,9 @@ export function getCarStateObject(c: ICar) {
     finish: () => { setFinished(true); },
 
     start: async () => {
+      setAwaiting(true);
       const start = await model.start(car.id);
+      setAwaiting(false);
       setEngineStatus('started');
       const speed = (start.data as ICarSpeed).velocity;
       setDuration((start.data as ICarSpeed).distance / 1000 / speed);
@@ -72,7 +78,9 @@ export function getCarStateObject(c: ICar) {
     },
 
     stop: async () => {
+      setAwaiting(true);
       const stop = await model.stop(car.id);
+      setAwaiting(false);
       setEngineStatus('stopped');
       const speed = (stop.data as ICarSpeed).velocity;
       setCarSpeed(speed);  // will set 0

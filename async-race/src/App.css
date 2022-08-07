@@ -137,7 +137,7 @@ body {
   }
 
   to {
-    transform: translateX(calc(100vw - 240px));
+    transform: translateX(calc(100vw - 5em - 100px));
   }
 }
 
@@ -154,11 +154,45 @@ body {
 .broke::after {
   margin-left: -2.6em;
   content: "⚠️";
-  vertical-align: 35%;
+  vertical-align: 30%;
 }
 
 .winner::after {
   margin-left: -2.6em;
   content: "🏆";
-  vertical-align: 35%;
+  vertical-align: 30%;
+}
+
+.awaiting::after {
+  margin-left: -2.6em;
+  content: "⌛";
+  vertical-align: 30%;
+}
+
+.modal_wrapper {
+  background-color: rgb(30 30 25 / 50%);
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+  overflow: auto;
+  z-index: 5;
+}
+
+.modal {
+  width: 500px;
+  background: rgb(30 94 96 / 50%);
+  display: flex;
+  justify-content: center;
+  border-radius: 10px;
+  padding: 0 1em;
+}
+
+.modal p {
+  text-align: center;
 }

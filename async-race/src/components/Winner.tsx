@@ -2,11 +2,19 @@ import React, { useContext } from 'react';
 import { TRaceWinner } from '../types/types';
 
 interface WinnerProps {
-  data: TRaceWinner
+  data: TRaceWinner,
+  close: ()=>void
 }
 
-export function Winner({ data }: WinnerProps) {
+export function Winner({ data, close }: WinnerProps) {
   return (
-    <p>Winners is: {data.name} with time {data.time.toFixed(2)} sec!</p>
+    <>
+    <div className='modal_wrapper' onClick={close}>
+      <div className="modal">
+        <p>Winner is: {data.name} with time {data.time.toFixed(2)} sec!</p>
+      </div>
+    </div>
+    </>
+    
   );
 }

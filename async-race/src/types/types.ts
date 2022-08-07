@@ -66,4 +66,5 @@ export type TSortOptions = 'Wins' | 'Time';
 
 export type TEngineStatus = 'started' | 'stopped' | 'drive';
 
-export type TRaceWinner = { id: number, name: string, time: number };
+export type TRaceWinner = { id: number, name: string, time: number, wins: number, };
+export type TWinner = { id: number, wins: number, time: number };
