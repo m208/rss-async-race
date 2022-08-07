@@ -22,6 +22,12 @@ export const model = {
   deleteCar: async (id: number) => {
     const url = baseApiUrl + `/garage/${id}`;
     const data: string = await getJson(url, 'DELETE');
+
+    try {
+      await model.deleteWinner(id);
+    } catch (e) {
+      console.log('Deleted car does not belong to winners' );
+    }
     return data;
   },
 
@@ -92,6 +98,12 @@ export const model = {
   getWinner: async (id: number) => {
     const url = baseApiUrl + `/winners/${id}`;
     const data: TRaceWinner = await getJson(url, 'GET');
+    return data;
+  },
+
+  deleteWinner: async (id: number) => {
+    const url = baseApiUrl + `/winners/${id}`;
+    const data: string = await getJson(url, 'DELETE');
     return data;
   },
 
