@@ -45,6 +45,9 @@ export interface IAppState {
   winnersPagState: IPaginationContext
   winnersSort: ISortContext  
 
+  nav: {
+    showGarage: boolean, showWinners: boolean
+  }
 //  animationCount: IAnimState  // ?
 //  carState: TCarst  // ?
 }

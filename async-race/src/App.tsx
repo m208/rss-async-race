@@ -25,19 +25,19 @@ function App() {
 
   const [carState, setCarState] = useState<Array<ICarState>>([]);
 
-  const appState: IAppState = {
-    garagePagState: createPagState(garageCurrPage, garageLastPage),
-    winnersPagState: createPagState(winnersCurrPage, winnersLastPage),
-    winnersSort: { sortBy, setSortBy, activeSorter, setActiveSorter, timeSorter, setTimeSorter, winSorter, setWinSorter, onChange: () => { } },
-
-    //animationCount: prepareState({ counter, setCounter, shouldAnimate, setShouldAnimate, startAnim: ()=>{} }),
-    //carState: { carState, setCarState },
-  };
-
   const [showGarage, setShowGarage] = useState(true);
   const [showWinners, setShowWinners] = useState(false);
 
   const navActions = { setShowGarage, setShowWinners };
+
+  const appState: IAppState = {
+    garagePagState: createPagState(garageCurrPage, garageLastPage),
+    winnersPagState: createPagState(winnersCurrPage, winnersLastPage),
+    winnersSort: { sortBy, setSortBy, activeSorter, setActiveSorter, timeSorter, setTimeSorter, winSorter, setWinSorter, onChange: () => { } },
+    nav: { showGarage, showWinners },
+    //animationCount: prepareState({ counter, setCounter, shouldAnimate, setShouldAnimate, startAnim: ()=>{} }),
+    //carState: { carState, setCarState },
+  };
 
   return (
     <>

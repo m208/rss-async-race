@@ -14,7 +14,7 @@ interface WinnersProps {
 const winnersPerPage = 10;
 
 export function WinnersTable({ appState }: WinnersProps) {
-
+  const [winnersCount, setWinnersCount] = useState(0);
   const [updateNeeded, setUpdateNeeded] = useState(true);
   const [winnersFull, setWinnersFull] = useState<Array<IwinnersFull>>([]);
 
@@ -31,14 +31,13 @@ export function WinnersTable({ appState }: WinnersProps) {
     
     setPageCount(Math.ceil(+count / winnersPerPage));
     setWinnersFull(fullData);
+    setWinnersCount(+count);
   };
 
   useEffect(() => {
-    if (updateNeeded) {
-      getWinners(currentPage, winnersPerPage, sortBy, activeSorter);
-      setUpdateNeeded(false);
-    }
-  });
+    getWinners(currentPage, winnersPerPage, sortBy, activeSorter);
+    setUpdateNeeded(false);
+  }, [appState.nav.showWinners]);
 
   const winnerItems = winnersFull.map((el, i) =>
     <WinnerLine index={i + ((currentPage - 1) * winnersPerPage) + 1} winner={el} key={el.id}></WinnerLine>,
@@ -47,9 +46,11 @@ export function WinnersTable({ appState }: WinnersProps) {
 
   return (
     <div className="winners">
+      <p>Winners ({winnersCount})</p>
       <Paginator {...appState.winnersPagState} ></Paginator>
       <WinnersHeader {...appState.winnersSort} />
       {winnerItems}
+
     </div>
   );
 }
