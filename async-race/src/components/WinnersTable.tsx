@@ -29,15 +29,24 @@ export function WinnersTable({ appState }: WinnersProps) {
     const count = data.total as string;
     const fullData = await getFullWinnerData(winners);
     
+    
     setPageCount(Math.ceil(+count / winnersPerPage));
     setWinnersFull(fullData);
     setWinnersCount(+count);
   };
 
-  useEffect(() => {
+  const loadData = () =>{
     getWinners(currentPage, winnersPerPage, sortBy, activeSorter);
     setUpdateNeeded(false);
+  };
+
+  useEffect(() => {
+    loadData();
   }, [appState.nav.showWinners]);
+
+  useEffect(() => {
+    if (updateNeeded) loadData();
+  }, [updateNeeded]);
 
   const winnerItems = winnersFull.map((el, i) =>
     <WinnerLine index={i + ((currentPage - 1) * winnersPerPage) + 1} winner={el} key={el.id}></WinnerLine>,

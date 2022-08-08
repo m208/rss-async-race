@@ -56,7 +56,6 @@ export function Garage({ appState }: GarageProps) {
 
 
   useEffect(() => {
-    console.log(nonIdleCarsCounter);
     setdisableRaceBttn(nonIdleCarsCounter !== 0);
 
   }, [nonIdleCarsCounter]);
