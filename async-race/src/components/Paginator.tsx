@@ -23,11 +23,11 @@ export function Paginator({ currentPage, lastPage, setPage, setPageCount, onChan
 
 
   return (
-    <div className="line">
+    <div className="app_paginator">
       <button onClick={firstPage}>First</button>
       <button onClick={prevPage}>Prev</button>
 
-      <span>{currentPage}/{lastPage}</span>
+      <span className='paginator_page'>{currentPage}/{lastPage}</span>
 
       <button onClick={nextPage} >Next</button>
       <button onClick={endPage} >Last</button>
