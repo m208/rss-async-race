@@ -216,3 +216,11 @@ body {
   top: -9999px;
   left: -9999px;
 }
+
+button {
+  margin: 0 0.1em;
+}
+
+.paginator_page {
+  margin: 0 0.3em;
+}
