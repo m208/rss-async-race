@@ -15,6 +15,7 @@ interface GarageProps {
 
 export function Garage({ appState }: GarageProps) {
   const [carCount, setCarCount] = useState(0);
+  const [nonIdleCarsCounter, setnonIdleCarsCounter] = useState(0);
 
   const [raceStart, setRaceStart] = useState(false);
   const [raceReset, setRaceReset] = useState(false);
@@ -49,9 +50,16 @@ export function Garage({ appState }: GarageProps) {
   };
 
   useEffect(() => {
-    if (resetedCars >= currentCars.length ) setdisableRaceBttn(false);
+    if (resetedCars >= currentCars.length) setdisableRaceBttn(false); setRaceReset(false);
+
   }, [resetedCars]);
 
+
+  useEffect(() => {
+    console.log(nonIdleCarsCounter);
+    setdisableRaceBttn(nonIdleCarsCounter !== 0);
+
+  }, [nonIdleCarsCounter]);
 
   useEffect(() => {
     if (!updateState) {
@@ -65,47 +73,49 @@ export function Garage({ appState }: GarageProps) {
   const startRace = () => {
     setRaceReset(false);
     setRaceStart(true);
-    setraceWinner( null );
+    setraceWinner(null);
     setresetedCars(0);
 
     setdisableRaceBttn(true);
 
-    setRaceCounter(prev=>prev + 1);
-    
+    setRaceCounter(prev => prev + 1);
+
   };
   const resetRace = () => {
     setraceWinner(null);
     setRaceStart(false);
+
     setRaceReset(true);
+
   };
-  const setWinner = async (winner: TRaceWinner, counter: number) =>{
-    
-    setraceWinner(prev=>prev ? null : winner);
+  const setWinner = async (winner: TRaceWinner, counter: number) => {
+
+    setraceWinner(prev => prev ? null : winner);
     setRaceStart(false);
     setshowWinnerModal(true);
 
   };
 
-  const confirmReset = async (car: ICar) =>{
+  const confirmReset = async (car: ICar) => {
     setresetedCars(resetedCars + 1);
-    console.log(resetedCars);
   };
 
-  const closeWinnerModal = async () =>{ 
+  const closeWinnerModal = async () => {
     if (raceWinner) await manageWinnersDB(raceWinner);
-    setshowWinnerModal(false );
+    setshowWinnerModal(false);
   };
 
   const carItems = currentCars.map(car =>
-    <GarageItem 
-      car={car} 
-      raceStart={raceStart} 
-      raceReset={raceReset} 
+    <GarageItem
+      car={car}
+      raceStart={raceStart}
+      raceReset={raceReset}
       setWinner={setWinner}
       confirmReset={confirmReset}
       raceWinner={raceWinner}
       raceCounter={raceCounter}
-      key={car.id} 
+      setnonIdleCarsCounter={setnonIdleCarsCounter}
+      key={car.id}
     />,
   );
 
@@ -114,7 +124,7 @@ export function Garage({ appState }: GarageProps) {
       <GarageControls setRaceStart={startRace} setRaceReset={resetRace} disableRaceBttn={disableRaceBttn} />
       <div className='garage'>
         <h3>Garage ({carCount})</h3>
-        {(raceWinner && showWinnerModal) && <Winner data ={raceWinner} close={closeWinnerModal}/>}
+        {(raceWinner && showWinnerModal) && <Winner data={raceWinner} close={closeWinnerModal} />}
         {carItems}
         <Paginator {...appState.garagePagState} />
       </div>

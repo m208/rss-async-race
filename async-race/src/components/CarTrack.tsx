@@ -10,12 +10,13 @@ interface CarItemProps {
   raceStart: boolean
   raceReset: boolean
   setWinner: (winner: TRaceWinner, raceCounter: number) => void
+  setnonIdleCarsCounter: React.Dispatch<React.SetStateAction<number>>;
   confirmReset: (car: ICar) => void
   raceWinner: TRaceWinner | null
   raceCounter: number
 }
 
-export function GarageItem({ car, raceStart, raceReset, setWinner, confirmReset, raceWinner, raceCounter }: CarItemProps) {
+export function GarageItem({ car, raceStart, raceReset, setWinner, confirmReset, raceWinner, raceCounter, setnonIdleCarsCounter }: CarItemProps) {
   const car2: ICarState = getCarStateObject(car);
   const [started, setStart] = useState(false);
   const [reseted, setReset] = useState(false);
@@ -46,21 +47,20 @@ export function GarageItem({ car, raceStart, raceReset, setWinner, confirmReset,
   useEffect(() => {
     if (car2.reseted) {
       confirmReset(car2);
-      console.log('confirm reset ', car2.name);
-      
     }
   }, [car2.reseted]);
 
   useEffect(() => {
     if (raceReset) {
       resetRide();
-      // car2.reset();
-      // setIsIdle(true);
     }
   }, [raceReset]);
 
   useEffect(() => {
-    if (reseted) { resetRide(); }
+    if (reseted) { 
+      resetRide();
+      setnonIdleCarsCounter(prev=>prev - 1);
+    }
   }, [reseted]);
 
   useEffect(() => {
@@ -68,6 +68,8 @@ export function GarageItem({ car, raceStart, raceReset, setWinner, confirmReset,
       car2.ride();
       setIsIdle(false);
       setStart(false);
+
+      setnonIdleCarsCounter(prev=>prev + 1);
     }
   }, [started]);
 
@@ -78,12 +80,6 @@ export function GarageItem({ car, raceStart, raceReset, setWinner, confirmReset,
       ${raceCounter === car2.raceCounter && raceWinner && car2.shouldAnimate && car2.id === raceWinner.id ? 'winner' : ''}
       ${car2.awaiting ? 'awaiting' : ''}
     `;
-  // const className =
-  //   `unit_track ${car2.shouldAnimate ? 'ride' : ''} 
-  //     ${car2.broken && raceCounter === car2.raceCounter ? 'anim-pause broke' : ''} 
-  //     ${raceCounter === car2.raceCounter && raceWinner && car2.shouldAnimate && car2.id === raceWinner.id ? 'winner' : ''}
-  //     ${car2.awaiting ? 'awaiting' : ''}
-  //   `;
 
   return (
     <div className='garage_unit'>
