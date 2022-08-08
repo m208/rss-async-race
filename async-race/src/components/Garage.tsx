@@ -20,6 +20,10 @@ export function Garage({ appState }: GarageProps) {
   const [raceReset, setRaceReset] = useState(false);
   const [raceWinner, setraceWinner] = useState<TRaceWinner | null>(null);
   const [showWinnerModal, setshowWinnerModal] = useState(false);
+  const [resetedCars, setresetedCars] = useState(0);
+  const [disableRaceBttn, setdisableRaceBttn] = useState(false);
+
+  const [raceCounter, setRaceCounter] = useState(0);
 
   const { updateState, updated, updateNeeded, selectedCar } = useContext(GarageContext);
   const { currentCars, setCurrentCars } = useContext(GarageContext);
@@ -45,31 +49,56 @@ export function Garage({ appState }: GarageProps) {
   };
 
   useEffect(() => {
+    if (resetedCars >= currentCars.length ) setdisableRaceBttn(false);
+  }, [resetedCars]);
+
+
+  useEffect(() => {
     if (!updateState) {
       loadCars(currentPage, carsPerPage);
+      setraceWinner(null);
+      setdisableRaceBttn(false);
     }
   });
 
-  const startRace = () =>{
+  const startRace = () => {
     setRaceReset(false);
     setRaceStart(true);
+    setraceWinner( null );
+    setresetedCars(0);
+
+    setdisableRaceBttn(true);
+
+    setRaceCounter(prev=>prev + 1);
+    
   };
   const resetRace = () => {
     setraceWinner(null);
     setRaceStart(false);
     setRaceReset(true);
   };
-  const setWinner = async (winner: TRaceWinner ) =>{
+  const setWinner = async (winner: TRaceWinner, counter: number) =>{
+    
+    
+    if (raceCounter === counter ) {
+      console.log(raceCounter, counter);
+    }
     setraceWinner(prev=>prev ? null : winner);
     setRaceStart(false);
     setshowWinnerModal(true);
 
-    await manageWinnersDB(winner);
-
 
   };
 
-  const closeWinnerModal = () =>{ setshowWinnerModal(false );};
+  const confirmReset = async (car: ICar) =>{
+    setresetedCars(resetedCars + 1);
+    console.log(resetedCars);
+  };
+
+  const closeWinnerModal = async () =>{ 
+    if (raceWinner) await manageWinnersDB(raceWinner);
+    setshowWinnerModal(false );
+  };
 
   const carItems = currentCars.map(car =>
     <GarageItem 
@@ -77,14 +106,16 @@ export function Garage({ appState }: GarageProps) {
       raceStart={raceStart} 
       raceReset={raceReset} 
       setWinner={setWinner}
+      confirmReset={confirmReset}
       raceWinner={raceWinner}
+      raceCounter={raceCounter}
       key={car.id} 
     />,
   );
 
   return (
     <>
-      <GarageControls setRaceStart={startRace} setRaceReset={resetRace} />
+      <GarageControls setRaceStart={startRace} setRaceReset={resetRace} disableRaceBttn={disableRaceBttn} />
       <div className='garage'>
         <h3>Garage ({carCount})</h3>
         {(raceWinner && showWinnerModal) && <Winner data ={raceWinner} close={closeWinnerModal}/>}

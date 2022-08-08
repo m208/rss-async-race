@@ -23,6 +23,9 @@ export interface ICarState {
   setFinished: React.Dispatch<React.SetStateAction<boolean>>;
   awaiting: boolean;
   setAwaiting: React.Dispatch<React.SetStateAction<boolean>>;
+  reseted: boolean;
+  setReseted: React.Dispatch<React.SetStateAction<boolean>>;
+  raceCounter:number
 
   reset: () => void;
   broke: () => void;
@@ -30,7 +33,7 @@ export interface ICarState {
   start: () => Promise<void>;
   stop: () => Promise<void>;
   drive: () => Promise<void>;
-  ride: () => Promise<void>;
+  ride: (c?: number) => Promise<void>;
 }
 
 export function getCarStateObject(c: ICar) {
@@ -42,6 +45,8 @@ export function getCarStateObject(c: ICar) {
   const [shouldAnimate, setshouldAnimate] = useState(false);
   const [finished, setFinished] = useState(false);
   const [awaiting, setAwaiting] = useState(false);
+  const [reseted, setReseted] = useState(false);
+  const [raceCounter, setRaceCounter] = useState(-1);
 
   const carObj = {
     id: car.id,
@@ -52,6 +57,7 @@ export function getCarStateObject(c: ICar) {
     shouldAnimate, setshouldAnimate,
     finished, setFinished,
     awaiting, setAwaiting,
+    reseted, setReseted, raceCounter,
     car, setCar, broken, setBroken, carSpeed,
     setCarSpeed, engineStatus, setEngineStatus,
 
@@ -60,13 +66,19 @@ export function getCarStateObject(c: ICar) {
       setshouldAnimate(false);
       setBroken(false);
       setFinished(false);
+      setReseted(true);
     },
 
     broke: () => { setBroken(true); },
 
-    finish: () => { setFinished(true); },
+    finish: () => { 
+      setFinished(true); 
+
+    },
 
     start: async () => {
+      setReseted(false);
+      setFinished(false);
       setAwaiting(true);
       const start = await model.start(car.id);
       setAwaiting(false);
@@ -91,8 +103,10 @@ export function getCarStateObject(c: ICar) {
       setshouldAnimate(true);
       try {
         const drive = await model.drive(car.id);
+        //if (!reseted) carObj.finish();
         carObj.finish();
       } catch (error) {
+        //if (!reseted) carObj.broke();
         carObj.broke();
       } finally {
         setEngineStatus('stopped');
@@ -100,7 +114,8 @@ export function getCarStateObject(c: ICar) {
       }
     },
 
-    ride: async () => {
+    ride: async (counter? :number) => {
+      if (counter) setRaceCounter(counter);
       await carObj.start();
       await carObj.drive();
     },
