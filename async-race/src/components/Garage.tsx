@@ -58,6 +58,7 @@ export function Garage({ appState }: GarageProps) {
       loadCars(currentPage, carsPerPage);
       setraceWinner(null);
       setdisableRaceBttn(false);
+      setRaceReset(false);
     }
   });
 
@@ -79,14 +80,9 @@ export function Garage({ appState }: GarageProps) {
   };
   const setWinner = async (winner: TRaceWinner, counter: number) =>{
     
-    
-    if (raceCounter === counter ) {
-      console.log(raceCounter, counter);
-    }
     setraceWinner(prev=>prev ? null : winner);
     setRaceStart(false);
     setshowWinnerModal(true);
-
 
   };
 

@@ -103,10 +103,8 @@ export function getCarStateObject(c: ICar) {
       setshouldAnimate(true);
       try {
         const drive = await model.drive(car.id);
-        //if (!reseted) carObj.finish();
         carObj.finish();
       } catch (error) {
-        //if (!reseted) carObj.broke();
         carObj.broke();
       } finally {
         setEngineStatus('stopped');

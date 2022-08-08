@@ -29,7 +29,11 @@ export function GarageItem({ car, raceStart, raceReset, setWinner, confirmReset,
   };
 
   useEffect(() => {
-    if (raceStart) car2.ride(raceCounter);
+    if (raceStart) { 
+      car2.ride(raceCounter);
+      setIsIdle(false);
+    }
+    
   }, [raceStart]);
 
   useEffect(() => {
@@ -48,7 +52,11 @@ export function GarageItem({ car, raceStart, raceReset, setWinner, confirmReset,
   }, [car2.reseted]);
 
   useEffect(() => {
-    if (raceReset) car2.reset();
+    if (raceReset) {
+      resetRide();
+      // car2.reset();
+      // setIsIdle(true);
+    }
   }, [raceReset]);
 
   useEffect(() => {
@@ -66,10 +74,16 @@ export function GarageItem({ car, raceStart, raceReset, setWinner, confirmReset,
 
   const className =
     `unit_track ${car2.shouldAnimate ? 'ride' : ''} 
-      ${car2.broken && raceCounter === car2.raceCounter ? 'anim-pause broke' : ''} 
+      ${car2.broken && car2.shouldAnimate ? 'anim-pause broke' : ''} 
       ${raceCounter === car2.raceCounter && raceWinner && car2.shouldAnimate && car2.id === raceWinner.id ? 'winner' : ''}
       ${car2.awaiting ? 'awaiting' : ''}
     `;
+  // const className =
+  //   `unit_track ${car2.shouldAnimate ? 'ride' : ''} 
+  //     ${car2.broken && raceCounter === car2.raceCounter ? 'anim-pause broke' : ''} 
+  //     ${raceCounter === car2.raceCounter && raceWinner && car2.shouldAnimate && car2.id === raceWinner.id ? 'winner' : ''}
+  //     ${car2.awaiting ? 'awaiting' : ''}
+  //   `;
 
   return (
     <div className='garage_unit'>
