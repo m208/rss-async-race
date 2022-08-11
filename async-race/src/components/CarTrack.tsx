@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
 import { ICarState, getCarStateObject } from '../model/Car';
 import { getTypeFromId } from '../model/garage';
 import { ICar, TRaceWinner } from '../types/types';
@@ -9,76 +9,77 @@ interface CarItemProps {
   car: ICar
   raceStart: boolean
   raceReset: boolean
-  setWinner: (winner: TRaceWinner, raceCounter: number) => void
-  setnonIdleCarsCounter: React.Dispatch<React.SetStateAction<number>>;
+  setWinner: (winner: TRaceWinner) => void
+  setnonIdleCarsCounter: Dispatch<SetStateAction<number>>;
   confirmReset: (car: ICar) => void
   raceWinner: TRaceWinner | null
-  raceCounter: number
 }
 
-export function GarageItem({ car, raceStart, raceReset, setWinner, confirmReset, raceWinner, raceCounter, setnonIdleCarsCounter }: CarItemProps) {
-  const car2: ICarState = getCarStateObject(car);
+export function GarageItem({ car, raceStart, raceReset, setWinner, confirmReset, raceWinner, setnonIdleCarsCounter }: CarItemProps) {
+  const carModel: ICarState = getCarStateObject(car);
+  
   const [started, setStart] = useState(false);
   const [reseted, setReset] = useState(false);
-
   const [isIdle, setIsIdle] = useState(true);
 
   const resetRide = async () => {
-    await car2.reset();
+    carModel.reset();
     setIsIdle(true);
     setReset(false);
   };
 
+  // Single ride started
   useEffect(() => {
-    if (raceStart) { 
-      car2.ride(raceCounter);
+    if (started) {      
+      carModel.ride();
       setIsIdle(false);
+      setStart(false);
+      setnonIdleCarsCounter(prev=>prev + 1);
     }
-    
-  }, [raceStart]);
+  }, [started]);
 
-  useEffect(() => {
-    if (car2.finished && raceStart && raceCounter === car2.raceCounter) {
-
-      setWinner({ id: car2.id, name: car2.name, time: car2.duration, wins: 1 }, raceCounter);
-    }
-  }, [car2.finished]);
-
-  useEffect(() => {
-    if (car2.reseted) {
-      confirmReset(car2);
-    }
-  }, [car2.reseted]);
-
-  useEffect(() => {
-    if (raceReset) {
-      resetRide();
-    }
-  }, [raceReset]);
-
+  // Single ride reseted
   useEffect(() => {
     if (reseted) { 
       resetRide();
       setnonIdleCarsCounter(prev=>prev - 1);
     }
   }, [reseted]);
-
+    
+  // Race started
   useEffect(() => {
-    if (started) {      
-      car2.ride();
+    if (raceStart) { 
+      carModel.ride();
       setIsIdle(false);
-      setStart(false);
-
-      setnonIdleCarsCounter(prev=>prev + 1);
     }
-  }, [started]);
+  }, [raceStart]); 
 
+  // Race reseted
+  useEffect(() => {
+    if (raceReset) {
+      resetRide();
+    }
+  }, [raceReset]);
 
-  const className =
-    `unit_track ${car2.shouldAnimate ? 'ride' : ''} 
-      ${car2.broken && car2.shouldAnimate ? 'anim-pause broke' : ''} 
-      ${raceCounter === car2.raceCounter && raceWinner && car2.shouldAnimate && car2.id === raceWinner.id ? 'winner' : ''}
-      ${car2.awaiting ? 'awaiting' : ''}
+  // this car finished > send data to garage 
+  useEffect(() => {
+    if (carModel.finished && raceStart ) {
+      setWinner({ id: carModel.id, name: carModel.name, time: carModel.duration, wins: 1 });
+    }
+  }, [carModel.finished]);
+
+  // this car is reseted > send data to garage 
+  useEffect(() => {
+    if (carModel.reseted) {
+      confirmReset(carModel);
+    }
+  }, [carModel.reseted]);
+
+  const animation =
+    `unit_track ${carModel.shouldAnimate ? 'ride' : ''} 
+      ${carModel.broken && carModel.shouldAnimate ? 'anim-pause broke' : ''} 
+      ${raceWinner && carModel.shouldAnimate && carModel.id === raceWinner.id ? 'winner' : ''}
+      ${carModel.awaiting ? 'awaiting' : ''}
     `;
 
   return (
@@ -86,9 +87,10 @@ export function GarageItem({ car, raceStart, raceReset, setWinner, confirmReset,
       {<CarButtons car={car} start={setStart} reset={setReset} isIdle={isIdle} />}
       <div className="unit_car">
         <span className='garage_name'>{car.name}</span>
-        <div className={className}
-          style={{ animationDuration: `${car2.duration}s` }}>
-          <CarSvg color={car2.color} type={getTypeFromId(car2.id)} />
+        <div 
+          className={animation}
+          style={{ animationDuration: `${carModel.duration}s` }}>
+          <CarSvg color={carModel.color} type={getTypeFromId(carModel.id)} />
         </div>
       </div>
     </div>

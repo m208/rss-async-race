@@ -21,7 +21,7 @@ function App() {
     <>
       <Navigation {...navActions} />
       <div className={`app_garage ${!showGarage ? 'hidden' : ''} ` }>
-        <Garage appState={appState} />
+        <Garage/>
       </div>
       <div className={`app_winners ${!showWinners ? 'hidden' : ''} ` }>
         <WinnersTable appState={appState} />
