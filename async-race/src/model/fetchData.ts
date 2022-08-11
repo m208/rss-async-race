@@ -1,10 +1,7 @@
 import { ICar, ICarSpeed, IWinner, TEngineStatus, TRaceWinner, TSortDir, TSortOptions } from '../types/types';
+import { baseApiUrl } from './configVars';
 import { getJson, getJsonWithTotal, postJson } from './fetch';
 import { getRandomCar, getRandomName } from './garage';
-
-//const baseApiUrl2 = 'https://rss-async-race-api.herokuapp.com';
-const baseApiUrl = 'http://127.0.0.1:3000';
-
 
 export const model = {
   getCar: async (id: number) =>{

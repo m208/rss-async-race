@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { createPagState } from '../context/appState';
+import { itemsPerPage } from '../model/configVars';
 import { model } from '../model/fetchData';
 import { getFullWinnerData } from '../model/winners';
 import { IAppState, ICar, ISortContext, IWinner, IwinnersFull, TSortDir, TSortOptions } from '../types/types';
@@ -12,7 +13,7 @@ interface WinnersProps {
   appState: IAppState
 }
 
-const winnersPerPage = 10;
+const winnersPerPage = itemsPerPage.winners;
 
 export function WinnersTable({ appState }: WinnersProps) {
   const [winnersCount, setWinnersCount] = useState(0);

@@ -8,8 +8,9 @@ import { Paginator } from './Paginator';
 import { Winner } from './Winner';
 import { createPagState } from '../context/appState';
 import { useRaceLogic } from '../hooks/useRace';
+import { itemsPerPage } from '../model/configVars';
 
-const carsPerPage = 7;
+const carsPerPage = itemsPerPage.garage;
 
 export function Garage() {
   const [carCount, setCarCount] = useState(0);
