@@ -1,38 +1,45 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { GarageContext } from '../context/garageContext';
-import { ICar, IAppState, TRaceWinner } from '../types/types';
-import { manageWinnersDB, model } from '../model/fetchData';
+import { ICar } from '../types/types';
+import { model } from '../model/fetchData';
 import { GarageItem } from './CarTrack';
 import { GarageControls } from './GarageControls';
 import { Paginator } from './Paginator';
 import { Winner } from './Winner';
 import { createPagState } from '../context/appState';
+import { useRaceLogic } from '../hooks/useRace';
 
 const carsPerPage = 7;
 
-interface GarageProps {
-  appState: IAppState
-}
-
-export function Garage({ appState }: GarageProps) {
+export function Garage() {
   const [carCount, setCarCount] = useState(0);
-  const [nonIdleCarsCounter, setnonIdleCarsCounter] = useState(0);
-
-  const [raceStart, setRaceStart] = useState(false);
-  const [raceReset, setRaceReset] = useState(false);
-  const [raceWinner, setraceWinner] = useState<TRaceWinner | null>(null);
-  const [showWinnerModal, setshowWinnerModal] = useState(false);
-  const [resetedCars, setresetedCars] = useState(0);
-  const [disableRaceBttn, setdisableRaceBttn] = useState(false);
-
-  const [raceCounter, setRaceCounter] = useState(0);
 
   const { updateState, updated, updateNeeded, selectedCar } = useContext(GarageContext);
   const { currentCars, setCurrentCars } = useContext(GarageContext);
 
-  const garagePagState = createPagState(useState(1), useState(1)) ;
+  const garagePagState = createPagState(useState(1), useState(1));
   const { currentPage, lastPage, setPage, setPageCount } = garagePagState;
   garagePagState.onChange = updateNeeded;
+
+  const {
+    nonIdleCarsCounter,
+    setnonIdleCarsCounter,
+    raceStart,
+    raceReset,
+    setRaceReset,
+    raceWinner,
+    setraceWinner,
+    showWinnerModal,
+    resetedCars,
+    disableRaceBttn,
+    setdisableRaceBttn,
+    startRace,
+    resetRace,
+    setWinner,
+    confirmReset,
+    closeWinnerModal,
+
+  } = useRaceLogic();
 
   const loadCars = async (num?: number, limit?: number) => {
 
@@ -50,7 +57,6 @@ export function Garage({ appState }: GarageProps) {
     }
   };
 
-  //loading data
   useEffect(() => {
     if (!updateState) {
       loadCars(currentPage, carsPerPage);
@@ -62,46 +68,14 @@ export function Garage({ appState }: GarageProps) {
 
   useEffect(() => {
     if (resetedCars >= currentCars.length) {
-      setdisableRaceBttn(false); 
+      setdisableRaceBttn(false);
       setRaceReset(false);
     }
   }, [resetedCars]);
 
-
   useEffect(() => {
     setdisableRaceBttn(nonIdleCarsCounter !== 0);
   }, [nonIdleCarsCounter]);
-
-
-  const startRace = () => {
-    setRaceReset(false);
-    setRaceStart(true);
-    setraceWinner(null);
-    setresetedCars(0);
-    setdisableRaceBttn(true);
-    setRaceCounter(prev => prev + 1);
-  };
-  
-  const resetRace = () => {
-    setraceWinner(null);
-    setRaceStart(false);
-    setRaceReset(true);
-  };
-
-  const setWinner = async (winner: TRaceWinner, counter: number) => {
-    setraceWinner(prev => prev ? null : winner);
-    setRaceStart(false);
-    setshowWinnerModal(true);
-  };
-
-  const confirmReset = async (car: ICar) => {
-    setresetedCars(resetedCars + 1);
-  };
-
-  const closeWinnerModal = async () => {
-    if (raceWinner) await manageWinnersDB(raceWinner);
-    setshowWinnerModal(false);
-  };
 
   const carItems = currentCars.map(car =>
     <GarageItem
@@ -111,7 +85,6 @@ export function Garage({ appState }: GarageProps) {
       setWinner={setWinner}
       confirmReset={confirmReset}
       raceWinner={raceWinner}
-      raceCounter={raceCounter}
       setnonIdleCarsCounter={setnonIdleCarsCounter}
       key={car.id}
     />,
