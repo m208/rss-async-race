@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { createPagState } from '../context/appState';
 import { model } from '../model/fetchData';
 import { getFullWinnerData } from '../model/winners';
-import { IAppState, ICar, IWinner, IwinnersFull, TSortDir, TSortOptions } from '../types/types';
+import { IAppState, ICar, ISortContext, IWinner, IwinnersFull, TSortDir, TSortOptions } from '../types/types';
 import { Paginator } from './Paginator';
 import { WinnerLine } from './WinnerLine';
 import { WinnersHeader } from './WinnersHeader';
@@ -18,10 +19,27 @@ export function WinnersTable({ appState }: WinnersProps) {
   const [updateNeeded, setUpdateNeeded] = useState(true);
   const [winnersFull, setWinnersFull] = useState<Array<IwinnersFull>>([]);
 
-  const { currentPage, setPageCount } = appState.winnersPagState;
-  const { sortBy, activeSorter } = appState.winnersSort;
-  appState.winnersPagState.onChange = () => { setUpdateNeeded(prev => !prev); };
-  appState.winnersSort.onChange = () => { setUpdateNeeded(prev => !prev); };
+  const [sortBy, setSortBy] = useState<TSortOptions>('Time');
+  const [activeSorter, setActiveSorter] = useState<TSortDir>('Asc');
+  const [timeSorter, setTimeSorter] = useState<TSortDir>('Asc');
+  const [winSorter, setWinSorter] = useState<TSortDir>('Asc');
+
+  const winnersSort: ISortContext = { 
+    sortBy, 
+    setSortBy, 
+    activeSorter, 
+    setActiveSorter, 
+    timeSorter, 
+    setTimeSorter, 
+    winSorter, 
+    setWinSorter, 
+    onChange: () => {setUpdateNeeded(prev => !prev);}, 
+  };
+
+  const winnersPagState = createPagState(useState(1), useState(1));
+  const { currentPage, setPageCount } = winnersPagState;
+  winnersPagState.onChange = () => { setUpdateNeeded(prev => !prev); };
+
 
   const getWinners = async (page: number, limit: number, sort: TSortOptions, order: TSortDir) => {
     const data = await model.getWinners(page, limit, sort, order);
@@ -56,8 +74,8 @@ export function WinnersTable({ appState }: WinnersProps) {
   return (
     <div className="winners">
       <p>Winners ({winnersCount})</p>
-      <Paginator {...appState.winnersPagState} ></Paginator>
-      <WinnersHeader {...appState.winnersSort} />
+      <Paginator {...winnersPagState} ></Paginator>
+      <WinnersHeader {...winnersSort} />
       {winnerItems}
 
     </div>

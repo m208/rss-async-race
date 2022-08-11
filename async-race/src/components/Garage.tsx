@@ -1,11 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { GarageContext } from '../context/garageContext';
-import { IPaginationContext, ICar, IAppState, TRaceWinner } from '../types/types';
+import { ICar, IAppState, TRaceWinner } from '../types/types';
 import { manageWinnersDB, model } from '../model/fetchData';
 import { GarageItem } from './CarTrack';
 import { GarageControls } from './GarageControls';
 import { Paginator } from './Paginator';
 import { Winner } from './Winner';
+import { createPagState } from '../context/appState';
 
 const carsPerPage = 7;
 
@@ -29,8 +30,9 @@ export function Garage({ appState }: GarageProps) {
   const { updateState, updated, updateNeeded, selectedCar } = useContext(GarageContext);
   const { currentCars, setCurrentCars } = useContext(GarageContext);
 
-  const { currentPage, lastPage, setPage, setPageCount } = appState.garagePagState;
-  appState.garagePagState.onChange = updateNeeded;
+  const garagePagState = createPagState(useState(1), useState(1)) ;
+  const { currentPage, lastPage, setPage, setPageCount } = garagePagState;
+  garagePagState.onChange = updateNeeded;
 
   const loadCars = async (num?: number, limit?: number) => {
 
@@ -44,22 +46,11 @@ export function Garage({ appState }: GarageProps) {
       const count = res.total ? +res.total : 0;
       setCarCount(count);
       setPageCount(Math.ceil(count / carsPerPage));
-
       updated();
     }
   };
 
-  useEffect(() => {
-    if (resetedCars >= currentCars.length) setdisableRaceBttn(false); setRaceReset(false);
-
-  }, [resetedCars]);
-
-
-  useEffect(() => {
-    setdisableRaceBttn(nonIdleCarsCounter !== 0);
-
-  }, [nonIdleCarsCounter]);
-
+  //loading data
   useEffect(() => {
     if (!updateState) {
       loadCars(currentPage, carsPerPage);
@@ -69,30 +60,38 @@ export function Garage({ appState }: GarageProps) {
     }
   });
 
+  useEffect(() => {
+    if (resetedCars >= currentCars.length) {
+      setdisableRaceBttn(false); 
+      setRaceReset(false);
+    }
+  }, [resetedCars]);
+
+
+  useEffect(() => {
+    setdisableRaceBttn(nonIdleCarsCounter !== 0);
+  }, [nonIdleCarsCounter]);
+
+
   const startRace = () => {
     setRaceReset(false);
     setRaceStart(true);
     setraceWinner(null);
     setresetedCars(0);
-
     setdisableRaceBttn(true);
-
     setRaceCounter(prev => prev + 1);
-
   };
+  
   const resetRace = () => {
     setraceWinner(null);
     setRaceStart(false);
-
     setRaceReset(true);
-
   };
-  const setWinner = async (winner: TRaceWinner, counter: number) => {
 
+  const setWinner = async (winner: TRaceWinner, counter: number) => {
     setraceWinner(prev => prev ? null : winner);
     setRaceStart(false);
     setshowWinnerModal(true);
-
   };
 
   const confirmReset = async (car: ICar) => {
@@ -125,12 +124,8 @@ export function Garage({ appState }: GarageProps) {
         <h3>Garage ({carCount})</h3>
         {(raceWinner && showWinnerModal) && <Winner data={raceWinner} close={closeWinnerModal} />}
         {carItems}
-        <Paginator {...appState.garagePagState} />
+        <Paginator {...garagePagState} />
       </div>
     </>
-
-
-
-
   );
 }

@@ -41,15 +41,10 @@ export interface ISortContext {
 }
 
 export interface IAppState {
-  garagePagState: IPaginationContext
-  winnersPagState: IPaginationContext
-  winnersSort: ISortContext  
-
   nav: {
-    showGarage: boolean, showWinners: boolean
+    showGarage: boolean, 
+    showWinners: boolean
   }
-//  animationCount: IAnimState  // ?
-//  carState: TCarst  // ?
 }
 
 type TCarst = {
